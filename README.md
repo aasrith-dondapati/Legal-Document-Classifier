@@ -133,11 +133,11 @@ Before running the project, ensure you have the following installed:
 
 **Your Action:**
 
-* Review the** **`TfidfVectorizer` parameters. While** **`GridSearchCV` tunes some, you might manually adjust** **`stop_words` (e.g., create a custom list for specific legal terms) or** **`ngram_range` if your preliminary results are poor.
+* Review the **`TfidfVectorizer` parameters. While** **`GridSearchCV` tunes some, you might manually adjust** **`stop_words` (e.g., create a custom list for specific legal terms) or** `ngram_range` if your preliminary results are poor.
 
 **Code Details:**
 
-* A** ****`Pipeline`** is created, chaining two steps:
+* A **`Pipeline`** is created, chaining two steps:
   * **`TfidfVectorizer`:** Transforms text into numerical features.
     * `stop_words='english'`: Filters out common English words (e.g., "the", "is").
     * `max_df=0.85`: Ignores terms that appear in more than 85% of documents (too common to be discriminative).
@@ -149,11 +149,11 @@ Before running the project, ensure you have the following installed:
 
 **Your Action:**
 
-* If your accuracy isn't hitting 93%, you can** ****expand the** **`param_grid`** with more values or even different TF-IDF parameters (`use_idf`,** **`smooth_idf`) or other classifiers like** **`LogisticRegression`.
+* If your accuracy isn't hitting 93%, you can ****expand the** **`param_grid`** with more values or even different TF-IDF parameters (`use_idf`,** **`smooth_idf`) or other classifiers like** `LogisticRegression`.
 
 **Code Details:**
 
-* `GridSearchCV` systematically searches through a predefined** **`param_grid` of hyperparameter combinations for both** **`TfidfVectorizer` and** **`LinearSVC`.
+* `GridSearchCV` systematically searches through a predefined **`param_grid` of hyperparameter combinations for both** **`TfidfVectorizer` and** `LinearSVC`.
 * **Cross-validation (`cv=5`):** The training data is split into 5 folds. The model is trained on 4 folds and validated on the remaining 1, repeated 5 times. This provides a more reliable estimate of performance.
 * `n_jobs=-1`: Utilizes all available CPU cores for faster execution.
 * The best combination of parameters and the best cross-validation accuracy are printed.
@@ -162,11 +162,11 @@ Before running the project, ensure you have the following installed:
 
 **Your Action:**
 
-* Carefully analyze the** ** **Test Set Accuracy** ,** ** **Classification Report** , and** ** **Confusion Matrix** . This is where you understand how well your model performs and where it struggles.
+* Carefully analyze the ***Test Set Accuracy** ,* **Classification Report** , and **Confusion Matrix** . This is where you understand how well your model performs and where it struggles.
 
 **Code Details:**
 
-* The** **`best_estimator_` from** **`GridSearchCV` (your optimized model) is used to make predictions on the unseen** **`X_test` data.
+* The **`best_estimator_` from** **`GridSearchCV` (your optimized model) is used to make predictions on the unseen** `X_test` data.
 * **`accuracy_score`** : Provides the overall percentage of correct predictions.
 * **`classification_report`** : Details precision, recall, and F1-score for each class, giving a fine-grained view of performance.
 * **`confusion_matrix`** : Visualizes where misclassifications occur (e.g., if Contracts are often mistaken for NDAs). This is crucial for identifying areas for improvement.
@@ -175,33 +175,35 @@ Before running the project, ensure you have the following installed:
 
 **Your Action:**
 
-* No direct action, but remember the** **`model_filename`.
+* No direct action, but remember the `model_filename`.
 
 **Code Details:**
 
-* The entire trained** **`Pipeline` (including the** **`TfidfVectorizer` and** **`LinearSVC` with their optimal parameters) is saved to a** **`.pkl` file using** **`joblib`. This allows you to load and use the model later without retraining.
+* The entire trained **`Pipeline` (including the** **`TfidfVectorizer` and** **`LinearSVC` with their optimal parameters) is saved to a** **`.pkl` file using** `joblib`. This allows you to load and use the model later without retraining.
 
 ### Step 8: Making New Predictions
 
 **Your Action:**
 
-* Modify the** **`new_legal_docs` list with your actual new documents you want to classify.
+* Modify the `new_legal_docs` list with your actual new documents you want to classify.
 
 **Code Details:**
 
 * The script demonstrates how to load the saved pipeline.
-* New, unseen documents are passed through the same** **`preprocess_text` function.
-* The** **`loaded_pipeline.predict()` method automatically performs the TF-IDF transformation and classification in one step, outputting the predicted category.
+* New, unseen documents are passed through the same `preprocess_text` function.
+* The `loaded_pipeline.predict()` method automatically performs the TF-IDF transformation and classification in one step, outputting the predicted category.
 
 ---
 
 ## Customizing for Your Data
 
 1. Replace Simulated Data:
-   Locate the --- 1. Simulated Data Generation (REPLACE WITH YOUR REAL DATA) --- section in legal_classifier.py.
-   Comment out or delete the generate_simulated_data call and replace it with your data loading logic.
-   Example (for CSV):
-   **Python**
+   Locate
+
+   1. Simulated Data Generation (REPLACE WITH YOUR REAL DATA) section in legal_classifier.py.
+      Comment out or delete the generate_simulated_data call and replace it with your data loading logic.
+      Example (for CSV):
+      **Python**
 
    ```
    import pandas as pd
@@ -221,27 +223,17 @@ Before running the project, ensure you have the following installed:
 3. **Adjust Preprocessing:**
 
    * For very specific legal jargon, you might need to add custom stop words or use a more advanced tokenization technique.
-   * Consider if numbers or dates in your legal documents carry semantic meaning for classification; if so, adjust the** **`re.sub(r'\w*\d\w*', '', text)` line in** **`preprocess_text`.
+   * Consider if numbers or dates in your legal documents carry semantic meaning for classification; if so, adjust the **`re.sub(r'\w*\d\w*', '', text)` line in** `preprocess_text`.
 
 ---
 
 ## Troubleshooting and Tips
 
-* **"Missing NLTK Data" Error:** Ensure you've run** **`nltk.download('wordnet')` and** **`nltk.download('omw-1.4')`.
+* **"Missing NLTK Data" Error:** Ensure you've run **`nltk.download('wordnet')` and** `nltk.download('omw-1.4')`.
 * **Low Accuracy:**
   * **Data Quality:** The single biggest factor. Ensure your documents are cleanly text-extracted and accurately labeled.
   * **More Data:** While 5,000 is a good start, more diverse, labeled data can often boost accuracy.
-  * **Hyperparameter Tuning:** Experiment by expanding the** **`param_grid` in** **`GridSearchCV` (e.g., try different** **`max_df`/`min_df` values, or** **`ngram_range=(1,3)`).
-  * **Examine Misclassifications:** Use the confusion matrix to identify patterns in errors. Manually review documents that were misclassified to understand** ***why* the model struggled. This can reveal issues with labeling or guide custom preprocessing.
-* **Long Training Time:** `GridSearchCV` with many parameters and large datasets can take time.** **`n_jobs=-1` helps by using all CPU cores. If it's still too slow, you might reduce the number of** **`cv` folds or the complexity of the** **`param_grid`.
-* **Memory Issues:** For extremely large datasets (millions of documents), consider using online learning algorithms (`SGDClassifier`) or libraries optimized for scale like** **`Gensim` for word embeddings or** **`Vowpal Wabbit`. However, for 5,000 documents, Scikit-learn should handle it efficiently.
-
----
-
-## License
-
-This project is open-source and available under the MIT License. Feel free to use and modify it for your needs.
-
----
-
-This README should give you a comprehensive guide to understanding, running, and customizing your legal document classification model! Let me know if you have any more questions as you implement it.
+  * **Hyperparameter Tuning:** Experiment by expanding the **`param_grid` in** **`GridSearchCV` (e.g., try different** **`max_df`/`min_df` values, or** `ngram_range=(1,3)`).
+  * **Examine Misclassifications:** Use the confusion matrix to identify patterns in errors. Manually review documents that were misclassified to understand *why* the model struggled. This can reveal issues with labeling or guide custom preprocessing.
+* **Long Training Time:** `GridSearchCV` with many parameters and large datasets can take time. **`n_jobs=-1` helps by using all CPU cores. If it's still too slow, you might reduce the number of** **`cv` folds or the complexity of the** `param_grid`.
+* **Memory Issues:** For extremely large datasets (millions of documents), consider using online learning algorithms (`SGDClassifier`) or libraries optimized for scale like **`Gensim` for word embeddings or** `Vowpal Wabbit`. However, for 5,000 documents, Scikit-learn should handle it efficiently.
